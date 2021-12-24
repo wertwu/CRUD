@@ -10,6 +10,4 @@ router.register('users', UserView)
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api-token-auth/', TokenView.as_view()),
-
-    path('v1/', include(router.urls)),
 ]
