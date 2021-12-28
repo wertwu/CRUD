@@ -5,26 +5,18 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from .models import User, AuthToken
-from .serializers import UserReadOnlySerializer, UserWriteOnlySerializer, TokenSerializer
+from .serializers import TokenSerializer, UserSerializer
 
 
 class UserView(ModelViewSet):
 
     permission_classes = [IsAuthenticated]
 
-    serializer_class = UserWriteOnlySerializer
+    serializer_class = UserSerializer
     queryset = User.objects.all()
 
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return UserReadOnlySerializer
-        if self.action == 'retrieve':
-            return UserReadOnlySerializer
-        return self.serializer_class
-
     def perform_destroy(self, instance):
-        instance.is_active = False
-        instance.save()
+        instance.delete()
 
 
 class TokenView(APIView):

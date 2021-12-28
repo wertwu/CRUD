@@ -1,7 +1,6 @@
 import binascii
 from os import urandom
 
-from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
@@ -11,13 +10,12 @@ from django.contrib.auth.models import User
 
 class AuthToken(models.Model):
 
-    key = models.CharField(primary_key=True, max_length=40)
-
+    key = models.CharField("Key", max_length=40, primary_key=True)
     user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
+        User, related_name='Authtoken',
+        on_delete=models.CASCADE, verbose_name="Users"
     )
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField("Created", auto_now_add=True)
 
     class Meta:
         verbose_name = "Token"
@@ -35,7 +33,8 @@ class AuthToken(models.Model):
         return self.key
 
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
+@receiver(post_save, sender=User)
+def save_user_identification(instance, created, **kwargs):
     if created:
-        Token.objects.create(user=instance)
+        AuthToken.objects.create(user=instance)
+

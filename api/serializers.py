@@ -4,13 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework.serializers import ModelSerializer
 
 
-class UserReadOnlySerializer(ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'first_name', 'last_name', 'is_active', 'id', 'last_login', 'is_superuser']
-
-
-class UserWriteOnlySerializer(ModelSerializer):
+class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'password', 'is_active']
@@ -41,4 +35,5 @@ class UserWriteOnlySerializer(ModelSerializer):
 class TokenSerializer(serializers.Serializer):
     username = serializers.CharField(label='Username', min_length=1)
     password = serializers.CharField(label='Password', min_length=1)
+
 
